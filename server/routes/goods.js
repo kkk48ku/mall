@@ -20,7 +20,25 @@ mongoose.connection.on("disconnected", function () {
 });
 
 router.get('/', function (req, res, next) {
-    Goods.find({}, function (err, doc) {
+
+    /*
+    * 商品列表分页及排序功能实现
+    * */
+    //获取第几页的String并转化为Number
+    let page = parseInt(req.param('page'));
+    //获取每页数据条数的String并转换为Number
+    let pageSize = parseInt(req.param('pageSize'));
+    //获取排序参数1为升序-1为降序
+    let sort = req.param('sort');
+    //用skip方法定义跳过的数据数量
+    let skip = (page - 1) * pageSize;
+    //定义一个空参数对象
+    let params = {};
+    //用limit方法确定每页显示数量
+    let goodsModel = Goods.find(params).skip(skip).limit(pageSize);
+    //用sort方法接受sort参数定义排序方式
+    goodsModel.sort({'salePrice': sort});
+    goodsModel.exec(function (err, doc) {
         if (err) {
             res.json({
                 status: '1',

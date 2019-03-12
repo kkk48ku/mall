@@ -9,7 +9,7 @@
                 <div class="filter-nav">
                     <span class="sortby">Sort by:</span>
                     <a href="javascript:void(0)" class="default cur">Default</a>
-                    <a href="javascript:void(0)" class="price">
+                    <a @click="sortGoods" href="javascript:void(0)" class="price">
                         Price
                         <svg class="icon icon-arrow-short">
                             <use xlink:href="#icon-arrow-short"></use>
@@ -46,7 +46,8 @@
                                 <li v-for="goods in goodsList">
                                     <div class="pic">
                                         <a href="javascript:void(0)">
-                                            <img v-lazy="'/static/' + goods.productImage" alt="">
+                                            <img v-lazy="'/static/' + goods.productImage"
+                                                 :key="'/static/' + goods.productImage">
                                         </a>
                                     </div>
                                     <div class="main">
@@ -83,6 +84,12 @@
         data() {
             return {
                 goodsList: [],
+                priceChecked: 'all',
+                filterBy: false,
+                overLayFlag: false,
+                sortFlag: true,
+                page: 1,
+                pageSize: 8,
                 priceFilter: [
                     {
                         startPrice: 0.00,
@@ -100,10 +107,7 @@
                         startPrice: 1500.00,
                         endPrice: 2000.00
                     }
-                ],
-                priceChecked: 'all',
-                filterBy: false,
-                overLayFlag: false
+                ]
             }
         },
         components: {
@@ -116,14 +120,28 @@
         },
         methods: {
             getGoodsList() {
-                axios.get("/goods").then((result) => {
-                    const res = result.data;
+                let params = {
+                        page: this.page,
+                        pageSize: this.pageSize,
+                        //true取1false取-1
+                        sort: this.sortFlag ? 1 : -1
+                    }
+                ;
+                axios.get("/goods", {
+                    params: params
+                }).then((response) => {
+                    const res = response.data;
                     if (res.status === '0') {
                         this.goodsList = res.result.list;
                     } else {
                         this.goodsList = [];
                     }
                 })
+            },
+            sortGoods() {
+                this.sortFlag = !this.sortFlag;
+                this.page = 1;
+                this.getGoodsList();
             },
             toggleFilterPop() {
                 this.filterBy = !this.filterBy;
