@@ -1,0 +1,34 @@
+{
+    "goods": [
+        {
+            "productId": "100001",
+            "productName": "音响",
+            "productPrice": 499,
+            "productImg": "1.jpg"
+        },
+        {
+            "productId": "100002",
+            "productName": "小米5",
+            "productPrice": 1499,
+            "productImg": "2.jpg"
+        },
+        {
+            "productId": "100003",
+            "productName": "小米6",
+            "productPrice": 2499,
+            "productImg": "3.jpg"
+        },
+        {
+            "productId": "100004",
+            "productName": "小米7",
+            "productPrice": 2430,
+            "productImg": "4.jpg"
+        },
+        {
+            "productId": "100005",
+            "productName": "小米8",
+            "productPrice": 5999,
+            "productImg": "5.jpg"
+        }
+    ]
+}
