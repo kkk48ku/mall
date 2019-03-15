@@ -54,11 +54,20 @@
                                         <div class="name">{{goods.productName}}</div>
                                         <div class="price">¥：{{goods.salePrice}}元</div>
                                         <div class="btn-area">
-                                            <a href="javascript:void(0)" class="btn btn--m">加入购物车</a>
+                                            <a href="javascript:void(0)"
+                                               class="btn btn--m"
+                                               @click="addCart(goods.productId)">加入购物车</a>
                                         </div>
                                     </div>
                                 </li>
                             </ul>
+                            <!--分页功能-->
+                            <div class="load-more"
+                                 v-infinite-scroll="loadMore"
+                                 infinite-scroll-disabled="busy"
+                                 infinite-scroll-distance="30">
+                                <img v-show="loading" src="./../assets/loading-spinning-bubbles.svg">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -69,6 +78,14 @@
     </div>
 </template>
 
+<style scoped>
+    .load-more {
+        height: 100px;
+        line-height: 100px;
+        text-align: center;
+        color: #000;
+    }
+</style>
 <script>
     // 导入样式文件只需要引入文件路径
     import '@/assets/css/base.css';
@@ -90,6 +107,8 @@
                 sortFlag: true,
                 page: 1,
                 pageSize: 8,
+                busy: true,
+                loading: false,
                 priceFilter: [
                     {
                         startPrice: 0.00,
@@ -105,7 +124,7 @@
                     },
                     {
                         startPrice: 1500.00,
-                        endPrice: 2000.00
+                        endPrice: 5000.00
                     }
                 ]
             }
@@ -119,20 +138,33 @@
             this.getGoodsList();
         },
         methods: {
-            getGoodsList() {
+            getGoodsList(flag) {
+                //传参到后台
                 let params = {
-                        page: this.page,
-                        pageSize: this.pageSize,
-                        //true取1false取-1
-                        sort: this.sortFlag ? 1 : -1
-                    }
-                ;
+                    page: this.page,
+                    pageSize: this.pageSize,
+                    //true取1false取-1
+                    sort: this.sortFlag ? 1 : -1,
+                    priceLevel: this.priceChecked,
+                };
+                this.loading = true;
                 axios.get("/goods", {
                     params: params
                 }).then((response) => {
                     const res = response.data;
+                    this.loading = true;
                     if (res.status === '0') {
-                        this.goodsList = res.result.list;
+                        if (flag) {
+                            this.goodsList = this.goodsList.concat(res.result.list);
+                            this.busy = res.result.count === 0;
+                            if (this.goodsList.length < (this.page * this.pageSize)) {
+                                this.busy = true;
+                                this.loading = false;
+                            }
+                        } else {
+                            this.goodsList = res.result.list;
+                            this.busy = false;
+                        }
                     } else {
                         this.goodsList = [];
                     }
@@ -149,11 +181,37 @@
             },
             setPriceFilter(index) {
                 this.priceChecked = index;
-                if (this.overLayFlag) return this.toggleFilterPop();
+                this.merge();
             },
             setPriceFilterAll() {
                 this.priceChecked = 'all';
+                this.merge();
+            },
+            merge() {
                 if (this.overLayFlag) return this.toggleFilterPop();
+                this.page = 1;
+                this.getGoodsList();
+            },
+            loadMore() {
+                this.busy = true;
+                setTimeout(() => {
+                    for (let i = 0, j = 1; i < j; i++) {
+                        this.page++;
+                        this.getGoodsList(true);
+                    }
+                }, 500);
+            },
+            addCart(productId) {
+                axios.post("/goods/addCart", {
+                    productId: productId
+                }).then((res) => {
+                    console.log(res)
+                    if (res.status === 200) {
+                        alert("加入成功")
+                    } else {
+                        alert("msg:" + res.msg);
+                    }
+                })
             }
         }
     }
