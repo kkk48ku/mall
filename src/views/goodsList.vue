@@ -8,10 +8,15 @@
             <div class="container">
                 <div class="filter-nav">
                     <span class="sortby">Sort by:</span>
-                    <a href="javascript:void(0)" class="default cur">Default</a>
-                    <a @click="sortGoods" href="javascript:void(0)" class="price">
+                    <a href="javascript:void(0)"
+                       class="default"
+                       :class="{'cur':defaultActive}"
+                       @click="sortDefault()">
+                        Default
+                    </a>
+                    <a @click="sortGoods" href="javascript:void(0)" class="price" :class="{'cur':active}">
                         Price
-                        <svg class="icon icon-arrow-short">
+                        <svg class="icon icon-arrow-short" :class="{'sort-up':!sortFlag}">
                             <use xlink:href="#icon-arrow-short"></use>
                         </svg>
                     </a>
@@ -85,6 +90,43 @@
         text-align: center;
         color: #000;
     }
+
+    .price:hover .icon-arrow-short {
+        background: url("../../static/active-down.svg");
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        background-size: cover;
+        line-height: 55px;
+        transition: all .3s ease-out;
+        top: -1.3px;
+        left: 34px;
+    }
+
+    .sort-up {
+        transform: rotate(180deg);
+        transition: all .3s ease-out;
+    }
+
+    .cur .icon-arrow-short {
+        background: url("../../static/active-down.svg");
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        background-size: cover;
+        line-height: 55px;
+        transition: all .3s ease-out;
+        top: -1.3px;
+        left: 34px;
+    }
+
+    @media screen and (max-width: 640px) {
+        .icon-arrow-short {
+            position: absolute;
+            left: 35px;
+            top: 16px;
+        }
+    }
 </style>
 <script>
     // 导入样式文件只需要引入文件路径
@@ -109,6 +151,8 @@
                 pageSize: 8,
                 busy: true,
                 loading: false,
+                defaultActive: true,
+                active: false,
                 priceFilter: [
                     {
                         startPrice: 0.00,
@@ -170,10 +214,19 @@
                     }
                 })
             },
+            sortDefault() {
+                this.defaultActive = true;
+                this.page = 1;
+                this.sortFlag = true;
+                this.active = false;
+                this.getGoodsList();
+            },
             sortGoods() {
                 this.sortFlag = !this.sortFlag;
                 this.page = 1;
                 this.getGoodsList();
+                this.active = true;
+                this.defaultActive = false;
             },
             toggleFilterPop() {
                 this.filterBy = !this.filterBy;
@@ -204,8 +257,9 @@
             addCart(productId) {
                 axios.post("/goods/addCart", {
                     productId: productId
-                }).then((res) => {
-                    if (res.status === 200) {
+                }).then((response) => {
+                    let res = response.data;
+                    if (res.status === "0") {
                         alert("加入成功")
                     } else {
                         alert("msg:" + res.msg);

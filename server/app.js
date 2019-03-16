@@ -22,9 +22,28 @@ app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+//登陆拦截
+app.use(function (req, res, next) {
+    if (req.cookies.userId) {
+        next();
+    } else {
+        //设置白名单
+        if (req.path === '/users/login' || req.path === '/goods' || req.path === '/users/checkLogin') {
+            next();
+        } else {
+            res.json({
+                status: '1000007',
+                msg: '对不起，您登录后才可进行后续操作!',
+                result: ''
+            })
+        }
+    }
+});
+
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/goods', goodsRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

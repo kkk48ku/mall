@@ -28,7 +28,7 @@
                         @click="loginModalFlag = true">
                         Login
                     </a>
-                    <a href="javascript:void(0)" class="navbar-link">Logout</a>
+                    <a href="javascript:void(0)" class="navbar-link" v-if="nikeName" @click="logOut()">Logout</a>
                     <div class="navbar-cart-container">
                         <span class="navbar-cart-count"></span>
                         <a class="navbar-link navbar-cart-link" href="/cart">
@@ -95,7 +95,18 @@
                 nikeName: ''
             }
         },
+        mounted() {
+            this.checkLogin();
+        },
         methods: {
+            checkLogin() {
+                axios.get('/users/checkLogin').then((response) => {
+                    let res = response.data;
+                    if (res.status === '0') {
+                        this.nikeName = res.result;
+                    }
+                })
+            },
             login() {
                 if (!this.userName || !this.userPwd) {
                     this.errorTip = true;
@@ -105,15 +116,25 @@
                         userPwd: this.userPwd
                     }).then((response) => {
                         let res = response.data;
-                        if (res.status === '0') {
+                        if (res.status === "0") {
                             this.errorTip = false;
                             this.loginModalFlag = false;
                             this.nikeName = res.result.userName;
+                            // this.userName = '';
+                            this.userPwd = '';
                         } else {
                             this.errorTip = true;
                         }
                     })
                 }
+            },
+            logOut() {
+                axios.post("/users/logout").then((response) => {
+                    let res = response.data;
+                    if (res.status === 0) {
+                        this.nikeName = '';
+                    }
+                })
             }
         }
     }
