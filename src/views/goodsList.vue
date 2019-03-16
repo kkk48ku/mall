@@ -205,7 +205,6 @@
                 axios.post("/goods/addCart", {
                     productId: productId
                 }).then((res) => {
-                    console.log(res)
                     if (res.status === 200) {
                         alert("加入成功")
                     } else {
