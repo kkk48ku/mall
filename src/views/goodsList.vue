@@ -99,7 +99,6 @@
         background-size: cover;
         line-height: 55px;
         transition: all .3s ease-out;
-        top: -1.3px;
         left: 34px;
     }
 
@@ -116,17 +115,17 @@
         background-size: cover;
         line-height: 55px;
         transition: all .3s ease-out;
-        top: -1.3px;
         left: 34px;
     }
 
-    @media screen and (max-width: 640px) {
+    @media screen and (max-width: 767px) {
         .icon-arrow-short {
             position: absolute;
             left: 35px;
             top: 16px;
         }
     }
+
 </style>
 <script>
     // 导入样式文件只需要引入文件路径
