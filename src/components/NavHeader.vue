@@ -19,7 +19,7 @@
             <div class="navbar-right-container" style="display: flex;">
                 <div class="navbar-menu-container">
                     <!--<a href="/" class="navbar-link">我的账户</a>-->
-                    <span class="navbar-link" v-if="nikeName">您好！</span>
+                    <span class="navbar-link hello" v-if="nikeName">您好！</span>
                     <span class="navbar-link" v-text="nikeName" v-if="nikeName"></span>
                     <a
                         href="javascript:void(0)"

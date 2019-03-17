@@ -831,7 +831,7 @@ a:hover {
 }
 
 @media only screen and (max-width: 450px) {
-    .navbar-link:nth-child(1) {
+    .navbar-link.hello {
         display: none;
     }
 }
@@ -2388,12 +2388,18 @@ html {
     }
 
     .md-modal .btn-wrap {
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
         display: -ms-flex;
         display: -webkit-box;
         display: -webkit-flex;
         display: -ms-flexbox;
         display: flex;
+        -webkit-box-align: center;
+        align-items: center;
         margin-top: 0;
+        padding: 0 105px 20px 105px;
     }
 
     .md-modal .btn-wrap .btn {
@@ -2411,8 +2417,7 @@ html {
     }
 
     .md-modal .btn-wrap .btn:first-child {
-        border-left: none;
-        border-right: none;
+        margin: 0 auto;
     }
 
     .md-modal.modal-normal .content-tit {
