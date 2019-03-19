@@ -38,7 +38,7 @@
                             <dd v-for="(price, index) in priceFilter">
                                 <a href="javascript:void(0)" @click="setPriceFilter(index)"
                                    :class="{'cur': priceChecked === index}">
-                                    {{price.startPrice}} - {{price.endPrice}}
+                                    {{price.startPrice | currency('$')}} - {{price.endPrice | currency('$')}}
                                 </a>
                             </dd>
                         </dl>
@@ -57,7 +57,7 @@
                                     </div>
                                     <div class="main">
                                         <div class="name">{{goods.productName}}</div>
-                                        <div class="price">¥：{{goods.salePrice}}元</div>
+                                        <div class="price">{{goods.salePrice | currency('$')}}</div>
                                         <div class="btn-area">
                                             <a href="javascript:void(0)"
                                                class="btn btn--m"
@@ -82,7 +82,7 @@
         <nav-footer></nav-footer>
         <modal v-bind:mdShow="mdShow" @close="closeModal()">
             <p slot="message">
-                请先登录，否则无法加入到购物车中!
+                请您先登录！
             </p>
             <div slot="btnGroup">
                 <a href="javascript:;" class="btn btn--m" @click="mdShow = false">关闭</a>
@@ -90,9 +90,6 @@
         </modal>
         <modal v-bind:mdShow="mdShowCart" @close="closeModal()">
             <p slot="message">
-                <svg class="icon-status-ok">
-                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-status-ok"></use>
-                </svg>
                 <span>加入购物车成功！</span>
             </p>
             <div slot="btnGroup">
@@ -100,7 +97,6 @@
                 <router-link href="javascript:;" class="btn btn--m" to="/cart">查看购物车</router-link>
             </div>
         </modal>
-
     </div>
 </template>
 
@@ -152,6 +148,7 @@
     // 导入样式文件只需要引入文件路径
     import '@/assets/css/base.css';
     import '@/assets/css/product.css';
+    import '@/assets/css/login.css';
     //引入头部组件 @直接引入src目录
     import NavHeader from '@/components/NavHeader.vue';
     import NavFooter from '@/components/NavFooter.vue';
@@ -175,7 +172,7 @@
                 defaultActive: true,
                 active: false,
                 mdShow: false,
-                mdShowCart:false,
+                mdShowCart: false,
                 priceFilter: [
                     {
                         startPrice: 0.00,

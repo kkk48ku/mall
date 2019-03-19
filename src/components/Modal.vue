@@ -18,11 +18,6 @@
         <div class="md-overlay" v-if="mdShow" @click="closeModal()"></div>
     </div>
 </template>
-<style scoped>
-    @media only screen and (max-width: 640px) {
-
-    }
-</style>
 <script>
     export default {
         name: "Modal",
